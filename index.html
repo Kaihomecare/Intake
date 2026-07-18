@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Kai Home Care — New Client Intake</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ WELCOME SCREEN ============ -->
+<div id="welcome" class="welcome">
+  <div class="welcome-card">
+    <div class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="56" height="56" role="img">
+        <path d="M6 40c8-10 16 6 24-2s14 8 28-6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M6 52c8-10 16 6 24-2s14 8 28-6" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".45"/>
+      </svg>
+    </div>
+    <p class="eyebrow">Kai Home Care</p>
+    <h1>New Client Intake</h1>
+    <p class="welcome-lead">
+      An employee-guided intake for live phone inquiries. Work through each section
+      with the caller, confirm fit, and close for an in-home assessment.
+    </p>
+    <ul class="welcome-points">
+      <li>Typical call time: 6&ndash;10 minutes</li>
+      <li>Guidance is available in every section</li>
+      <li>Qualification status updates as you go</li>
+      <li>Nothing is saved permanently in this browser</li>
+    </ul>
+    <button type="button" id="startBtn" class="btn btn-primary btn-lg">Start Intake</button>
+    <p class="welcome-note" id="resumeNote" hidden>
+      An unfinished intake was found in this browser session.
+      <button type="button" id="resumeBtn" class="linkbtn">Resume it</button>
+      or <button type="button" id="discardBtn" class="linkbtn">start fresh</button>.
+    </p>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div id="app" class="app" hidden>
+
+  <header class="appbar">
+    <div class="appbar-inner">
+      <div class="appbar-brand">
+        <span class="brand-mark sm" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="30" height="30">
+            <path d="M6 40c8-10 16 6 24-2s14 8 28-6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+            <path d="M6 52c8-10 16 6 24-2s14 8 28-6" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" opacity=".45"/>
+          </svg>
+        </span>
+        <span class="appbar-title">
+          <strong>Kai Home Care</strong>
+          <small>New Client Intake</small>
+        </span>
+      </div>
+
+      <div class="appbar-right">
+        <div id="statusBadge" class="badge badge-gray" role="status" aria-live="polite">
+          <span class="badge-icon" aria-hidden="true">&#9679;</span>
+          <span class="badge-text">Incomplete</span>
+        </div>
+        <button type="button" id="resetBtn" class="btn btn-ghost btn-sm">Start New</button>
+      </div>
+    </div>
+    <div class="mobile-progress" aria-hidden="true">
+      <div class="mobile-progress-bar"><span id="mProgFill"></span></div>
+      <div class="mobile-progress-label"><span id="mProgLabel">Section 1 of 7</span></div>
+    </div>
+  </header>
+
+  <div class="layout">
+
+    <!-- Desktop side navigation -->
+    <nav class="sidenav" aria-label="Intake sections">
+      <p class="sidenav-title">Sections</p>
+      <ol id="sideNavList" class="sidenav-list"></ol>
+      <div class="sidenav-foot">
+        <p class="sidenav-hint">Completed sections can be revisited at any time.</p>
+      </div>
+    </nav>
+
+    <main class="main" id="main">
+
+      <!-- ===== SECTION 1: CONTACT ===== -->
+      <section class="card section" data-section="0" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 1 of 7</p>
+          <h2>Contact</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Begin warmly. Determine who is calling, where the client lives, and who can approve care. Do not spend too much time collecting details before understanding why they called.</p>
+        </details>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q1">Intake employee <span class="req">*</span></label>
+            <input type="text" id="q1" name="intakeEmployee" data-required autocomplete="off">
+            <p class="err" data-err-for="q1"></p>
+          </div>
+          <div class="field">
+            <label for="q2">Date and time of inquiry</label>
+            <input type="datetime-local" id="q2" name="inquiryDateTime">
+            <p class="help">Prefilled automatically. Edit if you are logging an earlier call.</p>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q3">Caller name <span class="req">*</span></label>
+            <input type="text" id="q3" name="callerName" data-required autocomplete="off">
+            <p class="err" data-err-for="q3"></p>
+          </div>
+          <div class="field">
+            <label for="q4">Caller's relationship to client</label>
+            <select id="q4" name="callerRelationship">
+              <option value="">Select&hellip;</option>
+              <option>Self</option>
+              <option>Spouse or partner</option>
+              <option>Adult child</option>
+              <option>Other family member</option>
+              <option>Friend or neighbor</option>
+              <option>Legal representative</option>
+              <option>Healthcare or community professional</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q5">Best callback number <span class="req">*</span></label>
+            <input type="tel" id="q5" name="callbackNumber" data-required autocomplete="off" inputmode="tel">
+            <p class="err" data-err-for="q5"></p>
+          </div>
+          <div class="field">
+            <label for="q6">Email address</label>
+            <input type="email" id="q6" name="callerEmail" autocomplete="off">
+            <p class="err" data-err-for="q6"></p>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q7">Prospective client name <span class="req">*</span></label>
+            <input type="text" id="q7" name="clientName" data-required autocomplete="off">
+            <p class="err" data-err-for="q7"></p>
+          </div>
+          <div class="field">
+            <label for="q8">Approximate age</label>
+            <input type="number" id="q8" name="clientAge" min="0" max="120" inputmode="numeric">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="q9">Client city or neighborhood <span class="req">*</span></label>
+          <input type="text" id="q9" name="clientCity" data-required autocomplete="off">
+          <p class="err" data-err-for="q9"></p>
+        </div>
+
+        <fieldset class="field" data-required-group="livesOnOahu">
+          <legend>Does the client live on Oahu? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="livesOnOahu" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="livesOnOahu" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="livesOnOahu" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <p class="err" data-err-for="livesOnOahu"></p>
+          <div class="inline-flag flag-red" data-flag="oahuNo" hidden>
+            Client does not live on Oahu. Recommended disposition: Outside Service Area.
+          </div>
+          <div class="inline-flag flag-yellow" data-flag="oahuUnsure" hidden>
+            Confirm the client's island before scheduling an assessment.
+          </div>
+        </fieldset>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q11">Who is the primary care decision-maker? <span class="req">*</span></label>
+            <input type="text" id="q11" name="careDecisionMaker" data-required autocomplete="off">
+            <p class="err" data-err-for="q11"></p>
+          </div>
+          <div class="field">
+            <label for="q12">Who is the financial decision-maker? <span class="req">*</span></label>
+            <input type="text" id="q12" name="financialDecisionMaker" data-required autocomplete="off">
+            <p class="err" data-err-for="q12"></p>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Is the decision-maker involved in this inquiry?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="decisionMakerInvolved" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="decisionMakerInvolved" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="decisionMakerInvolved" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <div class="inline-flag flag-note" data-flag="dmNote" hidden>
+            Try to include the decision-maker in the assessment.
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ===== SECTION 2: WHY NOW ===== -->
+      <section class="card section" data-section="1" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 2 of 7</p>
+          <h2>Why Now?</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Start with an open question. Let the caller explain before selecting boxes. Listen for urgency, risk, family stress, and the outcome they want.</p>
+        </details>
+
+        <blockquote class="script">
+          &ldquo;Tell me what has changed that caused you to begin looking for help.&rdquo;
+        </blockquote>
+
+        <div class="field">
+          <label for="q14">What changed? <span class="req">*</span></label>
+          <textarea id="q14" name="whatChanged" rows="5" data-required></textarea>
+          <p class="err" data-err-for="q14"></p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Main concerns</legend>
+          <div class="cards" data-cards="mainConcerns"></div>
+        </fieldset>
+
+        <fieldset class="field" data-required-group="urgency">
+          <legend>How urgent does the situation feel to the family? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="urgency" value="Immediate"><span>Immediate</span></label>
+            <label class="opt"><input type="radio" name="urgency" value="Within a few days"><span>Within a few days</span></label>
+            <label class="opt"><input type="radio" name="urgency" value="Within one week"><span>Within one week</span></label>
+            <label class="opt"><input type="radio" name="urgency" value="Within two to four weeks"><span>Within two to four weeks</span></label>
+            <label class="opt"><input type="radio" name="urgency" value="Planning ahead"><span>Planning ahead</span></label>
+          </div>
+          <p class="err" data-err-for="urgency"></p>
+        </fieldset>
+
+        <div class="field">
+          <label for="q17">What would the family most like care to accomplish? <span class="req">*</span></label>
+          <textarea id="q17" name="desiredOutcome" rows="4" data-required></textarea>
+          <p class="err" data-err-for="q17"></p>
+        </div>
+
+        <div class="field">
+          <label for="q18">What may happen if additional help is not arranged?</label>
+          <textarea id="q18" name="riskIfNoHelp" rows="3"></textarea>
+        </div>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Reflect the need back to the caller. Connect Kai's support to remaining at home, maintaining familiar routines, preserving independence, improving consistency, and reducing family stress. Do not use fear-based sales language.</p>
+        </details>
+      </section>
+
+      <!-- ===== SECTION 3: CARE NEEDED ===== -->
+      <section class="card section" data-section="2" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 3 of 7</p>
+          <h2>Care Needed</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Identify the main duties. Do not perform the complete functional assessment during the phone call.</p>
+        </details>
+
+        <fieldset class="field">
+          <legend>What assistance is being requested?</legend>
+          <div class="cards" data-cards="servicesRequested"></div>
+        </fieldset>
+
+        <div class="field">
+          <label for="q20">What would the caregiver ideally do during a typical visit? <span class="req">*</span></label>
+          <textarea id="q20" name="typicalVisit" rows="4" data-required></textarea>
+          <p class="err" data-err-for="q20"></p>
+        </div>
+
+        <fieldset class="field" data-required-group="clinicalRequested">
+          <legend>Is the family requesting medical or clinical tasks? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="clinicalRequested" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="clinicalRequested" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="clinicalRequested" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <p class="err" data-err-for="clinicalRequested"></p>
+        </fieldset>
+
+        <div data-conditional="clinicalTasks" hidden>
+          <fieldset class="field">
+            <legend>Which medical or clinical tasks are being requested?</legend>
+            <div class="checks" data-checks="clinicalTasks"></div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Who is expected to perform those clinical tasks?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="clinicalProvider" value="Kai is expected to provide them"><span>Kai is expected to provide them</span></label>
+              <label class="opt"><input type="radio" name="clinicalProvider" value="Another provider will handle them"><span>Another provider will handle them</span></label>
+              <label class="opt"><input type="radio" name="clinicalProvider" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <div class="inline-flag flag-note">
+            Kai may provide non-medical support alongside a separate home health or nursing provider, but Kai staff cannot perform skilled clinical tasks.
+          </div>
+          <div class="inline-flag flag-red" data-flag="scopeRed" hidden>
+            Kai is being asked to perform skilled clinical tasks. Recommended disposition: Outside Current Scope.
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Does the client currently receive hospice, home health, or skilled nursing?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="existingClinical" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="existingClinical" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="existingClinical" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <div data-conditional="existingProvider" hidden>
+          <div class="field">
+            <label for="q24">Name or type of provider</label>
+            <input type="text" id="q24" name="existingProviderName" autocomplete="off">
+          </div>
+          <div class="inline-flag flag-note">
+            Clarify division of responsibilities during assessment.
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 4: SAFETY AND TRANSFERS ===== -->
+      <section class="card section" data-section="3" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 4 of 7</p>
+          <h2>Safety and Transfers</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Ask what physically happens when the client stands or transfers. Do not rely only on labels such as &ldquo;one-person assist.&rdquo;</p>
+        </details>
+
+        <fieldset class="field" data-required-group="mobility">
+          <legend>How does the client normally move around? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="mobility" value="Walks independently"><span>Walks independently</span></label>
+            <label class="opt"><input type="radio" name="mobility" value="Uses a cane"><span>Uses a cane</span></label>
+            <label class="opt"><input type="radio" name="mobility" value="Uses a walker"><span>Uses a walker</span></label>
+            <label class="opt"><input type="radio" name="mobility" value="Uses a wheelchair but can stand and assist"><span>Uses a wheelchair but can stand and assist</span></label>
+            <label class="opt"><input type="radio" name="mobility" value="Mostly remains in a chair or bed"><span>Mostly remains in a chair or bed</span></label>
+            <label class="opt"><input type="radio" name="mobility" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <p class="err" data-err-for="mobility"></p>
+        </fieldset>
+
+        <fieldset class="field" data-required-group="needsTransferHelp">
+          <legend>Does the client need help getting out of bed, a chair, or the toilet? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="needsTransferHelp" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="needsTransferHelp" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="needsTransferHelp" value="Sometimes"><span>Sometimes</span></label>
+            <label class="opt"><input type="radio" name="needsTransferHelp" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <p class="err" data-err-for="needsTransferHelp"></p>
+        </fieldset>
+
+        <div data-conditional="transferDetail" hidden>
+          <fieldset class="field">
+            <legend>Can the client bear weight?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="bearsWeight" value="Yes"><span>Yes</span></label>
+              <label class="opt"><input type="radio" name="bearsWeight" value="Partially"><span>Partially</span></label>
+              <label class="opt"><input type="radio" name="bearsWeight" value="No"><span>No</span></label>
+              <label class="opt"><input type="radio" name="bearsWeight" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Can the client follow directions and actively help with the transfer?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="followsDirections" value="Yes"><span>Yes</span></label>
+              <label class="opt"><input type="radio" name="followsDirections" value="Sometimes"><span>Sometimes</span></label>
+              <label class="opt"><input type="radio" name="followsDirections" value="No"><span>No</span></label>
+              <label class="opt"><input type="radio" name="followsDirections" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>What does the assisting person physically do?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="assistLevel" value="Provides balance or steadying only"><span>Provides balance or steadying only</span></label>
+              <label class="opt"><input type="radio" name="assistLevel" value="Provides light lifting assistance"><span>Provides light lifting assistance</span></label>
+              <label class="opt"><input type="radio" name="assistLevel" value="Provides substantial lifting assistance"><span>Provides substantial lifting assistance</span></label>
+              <label class="opt"><input type="radio" name="assistLevel" value="Lifts nearly all of the client's weight"><span>Lifts nearly all of the client's weight</span></label>
+              <label class="opt"><input type="radio" name="assistLevel" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Is a mechanical lift currently used or recommended?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="mechanicalLift" value="No"><span>No</span></label>
+              <label class="opt"><input type="radio" name="mechanicalLift" value="Yes"><span>Yes</span></label>
+              <label class="opt"><input type="radio" name="mechanicalLift" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="field">
+            <legend>Are two people required for transfers?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="twoPersonTransfer" value="No"><span>No</span></label>
+              <label class="opt"><input type="radio" name="twoPersonTransfer" value="Yes"><span>Yes</span></label>
+              <label class="opt"><input type="radio" name="twoPersonTransfer" value="Sometimes"><span>Sometimes</span></label>
+              <label class="opt"><input type="radio" name="twoPersonTransfer" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+
+          <div class="inline-flag flag-red" data-flag="transferRed" hidden>
+            Current information suggests the transfer needs may be outside Kai's service model. Do not promise an assessment until reviewed.
+          </div>
+          <div class="inline-flag flag-yellow" data-flag="transferYellow" hidden>
+            Transfer details are unclear or borderline. Supervisor review recommended before scheduling.
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Safety or behavioral concerns</legend>
+          <div class="checks" data-checks="safetyConcerns"></div>
+          <div class="inline-flag flag-red" data-flag="safetyRed" hidden>
+            A concern was selected that may create immediate danger to staff. Do not schedule until reviewed by a supervisor.
+          </div>
+        </fieldset>
+
+        <div data-conditional="safetyDetail" hidden>
+          <div class="field">
+            <label for="q33">Briefly describe the concern</label>
+            <textarea id="q33" name="safetyDetail" rows="3"></textarea>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend>Are there pets in the home?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="pets" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="pets" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="pets" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <div data-conditional="petsDetail" hidden>
+          <fieldset class="field">
+            <legend>Are the pets safely manageable around visitors?</legend>
+            <div class="radios">
+              <label class="opt"><input type="radio" name="petsManageable" value="Yes"><span>Yes</span></label>
+              <label class="opt"><input type="radio" name="petsManageable" value="No"><span>No</span></label>
+              <label class="opt"><input type="radio" name="petsManageable" value="Unsure"><span>Unsure</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 5: SCHEDULE AND PAYMENT ===== -->
+      <section class="card section" data-section="4" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 5 of 7</p>
+          <h2>Schedule and Payment</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>Get enough scheduling information to confirm the opportunity is workable. Do not build the final care schedule on this call. Kai's current minimum is <strong data-bind="minHours"></strong> hours per visit at <strong data-bind="rate"></strong> per hour.</p>
+        </details>
+
+        <fieldset class="field" data-required-group="startDate">
+          <legend>Desired start date <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="startDate" value="Immediately"><span>Immediately</span></label>
+            <label class="opt"><input type="radio" name="startDate" value="Within a few days"><span>Within a few days</span></label>
+            <label class="opt"><input type="radio" name="startDate" value="Within one week"><span>Within one week</span></label>
+            <label class="opt"><input type="radio" name="startDate" value="Within two to four weeks"><span>Within two to four weeks</span></label>
+            <label class="opt"><input type="radio" name="startDate" value="Planning for the future"><span>Planning for the future</span></label>
+          </div>
+          <p class="err" data-err-for="startDate"></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Requested days</legend>
+          <div class="checks" data-checks="requestedDays"></div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Preferred time</legend>
+          <div class="checks" data-checks="preferredTimes"></div>
+        </fieldset>
+
+        <fieldset class="field" data-required-group="hoursPerVisit">
+          <legend>Approximate hours per visit <span class="req">*</span></legend>
+          <div class="radios" data-radios="hoursPerVisit"></div>
+          <p class="err" data-err-for="hoursPerVisit"></p>
+          <div class="inline-flag flag-yellow" data-flag="hoursYellow" hidden></div>
+        </fieldset>
+
+        <div class="field">
+          <label for="q40">Approximate visits per week</label>
+          <select id="q40" name="visitsPerWeek">
+            <option value="">Select&hellip;</option>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
+            <option>5</option><option>6</option><option>7</option>
+            <option>Unsure</option>
+          </select>
+        </div>
+
+        <blockquote class="script" id="rateScript"></blockquote>
+
+        <div class="field">
+          <label class="opt opt-check">
+            <input type="checkbox" name="rateExplained" value="Yes">
+            <span>Hourly rate and minimum visit explained to the caller <span class="req">*</span></span>
+          </label>
+          <p class="err" data-err-for="rateExplained"></p>
+        </div>
+
+        <fieldset class="field" data-required-group="financiallyWorkable">
+          <legend>Is the rate and minimum financially workable? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="financiallyWorkable" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="financiallyWorkable" value="Likely, but another decision-maker must approve"><span>Likely, but another decision-maker must approve</span></label>
+            <label class="opt"><input type="radio" name="financiallyWorkable" value="Unsure"><span>Unsure</span></label>
+            <label class="opt"><input type="radio" name="financiallyWorkable" value="No"><span>No</span></label>
+          </div>
+          <p class="err" data-err-for="financiallyWorkable"></p>
+          <div class="inline-flag flag-red" data-flag="financeRed" hidden>
+            Rate is not workable for the family. Recommended disposition: Not Financially Qualified.
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Will the family accept the <span data-bind="minHours"></span>-hour visit minimum?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="acceptsMinimum" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="acceptsMinimum" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="acceptsMinimum" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Expected payment source</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="paymentSource" value="Client's private funds"><span>Client's private funds</span></label>
+            <label class="opt"><input type="radio" name="paymentSource" value="Family funds"><span>Family funds</span></label>
+            <label class="opt"><input type="radio" name="paymentSource" value="Long-term care insurance reimbursement"><span>Long-term care insurance reimbursement</span></label>
+            <label class="opt"><input type="radio" name="paymentSource" value="Veterans benefit"><span>Veterans benefit</span></label>
+            <label class="opt"><input type="radio" name="paymentSource" value="Other"><span>Other</span></label>
+            <label class="opt"><input type="radio" name="paymentSource" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <p class="help">Do not collect account numbers, card data, or policy identification numbers.</p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Does the family understand that Kai is private-pay and the responsible party remains responsible for payment?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="privatePayUnderstood" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="privatePayUnderstood" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="privatePayUnderstood" value="Unsure"><span>Unsure</span></label>
+          </div>
+          <div class="inline-flag flag-yellow" data-flag="privatePayYellow" hidden>
+            Do not mark the inquiry financially qualified until private-pay responsibility is explained.
+          </div>
+        </fieldset>
+      </section>
+
+      <!-- ===== SECTION 6: ASSESSMENT CLOSE ===== -->
+      <section class="card section" data-section="5" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 6 of 7</p>
+          <h2>Close for the Assessment</h2>
+        </header>
+
+        <details class="guidance">
+          <summary>Employee guidance</summary>
+          <p>If the inquiry appears appropriate, summarize what you heard and recommend the assessment as the next step.</p>
+        </details>
+
+        <blockquote class="script">
+          &ldquo;Based on what you've described, Kai may be a good fit. The next step is for us to meet the client in the home, understand the environment and how support would work, and determine an appropriate care plan.&rdquo;
+        </blockquote>
+
+        <fieldset class="field" data-required-group="willingToSchedule">
+          <legend>Is the family willing to schedule an in-home assessment? <span class="req">*</span></legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="willingToSchedule" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="willingToSchedule" value="Needs to speak with someone else"><span>Needs to speak with someone else</span></label>
+            <label class="opt"><input type="radio" name="willingToSchedule" value="Not ready"><span>Not ready</span></label>
+            <label class="opt"><input type="radio" name="willingToSchedule" value="No"><span>No</span></label>
+          </div>
+          <p class="err" data-err-for="willingToSchedule"></p>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Can the client attend the assessment?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="clientAttends" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="clientAttends" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="clientAttends" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Can the primary decision-maker attend?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="careDmAttends" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="careDmAttends" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="careDmAttends" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend>Can the financially responsible party attend or participate by phone?</legend>
+          <div class="radios">
+            <label class="opt"><input type="radio" name="financialDmAttends" value="Yes"><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="financialDmAttends" value="No"><span>No</span></label>
+            <label class="opt"><input type="radio" name="financialDmAttends" value="Unsure"><span>Unsure</span></label>
+          </div>
+        </fieldset>
+
+        <div data-conditional="assessmentDetail" hidden>
+          <div class="grid two">
+            <div class="field">
+              <label for="q49">Assessment date</label>
+              <input type="date" id="q49" name="assessmentDate">
+            </div>
+            <div class="field">
+              <label for="q50">Assessment time</label>
+              <input type="time" id="q50" name="assessmentTime">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="q51">Assessment address</label>
+            <textarea id="q51" name="assessmentAddress" rows="3"></textarea>
+          </div>
+
+          <fieldset class="field">
+            <legend>Who will attend?</legend>
+            <div class="checks" data-checks="attendees"></div>
+          </fieldset>
+
+          <div class="field">
+            <label for="q53">Directions, parking, gate code, pets, or access notes</label>
+            <textarea id="q53" name="accessNotes" rows="3"></textarea>
+            <p class="help">Do not record alarm codes, lockbox codes, payment-card data, or other sensitive credentials.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SECTION 7: SUMMARY ===== -->
+      <section class="card section" data-section="6" hidden>
+        <header class="section-head">
+          <p class="eyebrow">Section 7 of 7</p>
+          <h2>Summary and Disposition</h2>
+        </header>
+
+        <div class="reco" id="recoBox">
+          <p class="reco-label">System recommendation</p>
+          <p class="reco-value" id="recoValue">Incomplete</p>
+          <ul class="reco-reasons" id="recoReasons"></ul>
+        </div>
+
+        <div class="field">
+          <label for="q54">Final employee disposition</label>
+          <select id="q54" name="finalDisposition">
+            <option>Schedule Assessment</option>
+            <option>Assessment Scheduled</option>
+            <option>Supervisor Review Before Scheduling</option>
+            <option>Follow Up Later</option>
+            <option>Not Financially Qualified</option>
+            <option>Outside Current Scope</option>
+            <option>Outside Service Area</option>
+            <option>Family Declined</option>
+          </select>
+          <p class="help">Defaults to the system recommendation. This is a recommendation, not a final clinical or legal determination.</p>
+        </div>
+
+        <div class="field" data-conditional="overrideReason" hidden>
+          <label for="q55">Reason for override <span class="req">*</span></label>
+          <textarea id="q55" name="overrideReason" rows="3"></textarea>
+          <p class="err" data-err-for="q55"></p>
+        </div>
+
+        <div class="field">
+          <label for="q56">Additional notes for the assessor or supervisor</label>
+          <textarea id="q56" name="assessorNotes" rows="4"></textarea>
+        </div>
+
+        <div class="grid two">
+          <div class="field">
+            <label for="q57">Follow-up owner</label>
+            <input type="text" id="q57" name="followUpOwner" autocomplete="off">
+          </div>
+          <div class="field">
+            <label for="q58">Follow-up date</label>
+            <input type="date" id="q58" name="followUpDate">
+          </div>
+        </div>
+
+        <hr class="rule">
+
+        <h3 class="summary-title">Intake Summary</h3>
+        <div id="summaryOut" class="summary" aria-live="polite"></div>
+
+        <div class="summary-actions">
+          <button type="button" id="submitBtn" class="btn btn-primary">Submit Intake</button>
+          <button type="button" id="copyBtn" class="btn btn-secondary">Copy Summary</button>
+          <button type="button" id="printBtn" class="btn btn-secondary">Print Summary</button>
+          <button type="button" id="newBtn" class="btn btn-ghost">Start New Intake</button>
+        </div>
+        <p class="submit-msg" id="submitMsg" role="status" aria-live="polite"></p>
+      </section>
+
+      <!-- Navigation -->
+      <div class="navbar">
+        <button type="button" id="prevBtn" class="btn btn-secondary">Previous</button>
+        <span class="navbar-mid" id="navCounter"></span>
+        <button type="button" id="nextBtn" class="btn btn-primary">Next</button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ============ RESET MODAL ============ -->
+<div id="modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <h3 id="modalTitle">Start a new intake?</h3>
+    <p>All information entered for the current caller will be cleared. This cannot be undone.</p>
+    <div class="modal-actions">
+      <button type="button" id="modalCancel" class="btn btn-secondary">Cancel</button>
+      <button type="button" id="modalConfirm" class="btn btn-danger">Clear and start new</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
